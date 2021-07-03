@@ -1,4 +1,6 @@
 from tkinter import*
+import qrcode
+from PIL import Image,ImageTk
 class Qr_Generator:
     def __init__(self,root):
         self.root=root
@@ -55,12 +57,22 @@ class Qr_Generator:
         self.var_designation.set('')
         self.msg=""
         self.lbl_msg.config(text=self.msg)
+        self.qr_code.config(image='')
     
     def generate(self):
         if self.var_emp_code.get()=='' or self.var_name.get()==''or self.var_department.get()=='' or self.var_designation.get()=='' :
             self.msg='All Fields are required !!'
             self.lbl_msg.config(text=self.msg,fg="red")
         else:
+            qr_data =(f"Employee ID :{self.var_emp_code.get()}\nEmployee Name:{self.var_name.get()}\nDepartment:{self.var_department.get()}\nDesignation:{self.var_designation.get()}")
+            qr_code=qrcode.make(qr_data)
+            newsize=(180,180)
+            qr_code=qr_code.resize(newsize)
+            qr_code.save("Employee_QR/Emp_"+str(self.var_emp_code.get()+".png"))
+            #============ qr code image update ===================
+            self.im=ImageTk.PhotoImage(file="Employee_QR/Emp_"+str(self.var_emp_code.get()+".png"))
+            self.qr_code.config(image=self.im)
+            # ============ updating notification==================
             self.msg="QR Generated Successfully !!"
             self.lbl_msg.config(text=self.msg,fg="green")
     
